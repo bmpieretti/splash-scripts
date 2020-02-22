@@ -1,0 +1,103 @@
+{
+  "name": "@splash/scripts",
+  "version": "0.0.0-development",
+  "description": "Simple script wrappers for sharing common logic ",
+  "keywords": [
+    "splash",
+    "splash-scripts",
+    "scripts",
+    "wrappers"
+  ],
+  "author": {
+    "name": "Brook Pieretti",
+    "email": "bmpieretti@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bmpieretti/splash-scripts.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bmpieretti/splash-scripts/issues",
+    "email": "bmpieretti@gmail.com"
+  },
+  "engines": {
+    "node": ">=10",
+    "npm": ">5.2.0"
+  },
+  "types": "TODO",
+  "bin": {
+    "splash-scripts": "./index.js"
+  },
+  "license": "MIT",
+  "files": [
+    "lib",
+    "index.js"
+  ],
+  "scripts": {
+    "dev": "watch 'npm run clean && npm run build' src",
+    "test:command": "node ./index.js jest",
+    "test:command:watch": "node ./index.js jest:watch",
+    "test:command:coverage": "node ./index.js jest:coverage",
+    "test:command:fail": "node ./index.js jest:test:test:test",
+    "test:help": "node ./index.js help",
+    "babel": "babel src/ --out-dir lib/ --source-maps --copy-files",
+    "build": "npm run clean && npm run babel && npm run clean:test",
+    "lint": "npm run lint:fix && npm run lint:js",
+    "lint:js": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "verify": "npm run build && npm run lint:fix && npm run lint && npm run test",
+    "test": "jest -o",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "clean": "rimraf lib/",
+    "clean:test": "rimraf lib/**/tests/",
+    "semantic-release": "semantic-release",
+    "build:readme": "readme generate --config ./blueprint.json"
+  },
+  "dependencies": {
+    "chalk": "^3.0.0",
+    "chance": "^1.1.4",
+    "commander": "^3.0.2",
+    "cosmiconfig": "^6.0.0",
+    "deepmerge": "^4.2.2",
+    "shelljs": "^0.8.3"
+  },
+  "devDependencies": {
+    "@appnest/readme": "^1.2.4",
+    "@babel/cli": "^7.6.4",
+    "@babel/core": "^7.6.4",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-proposal-optional-chaining": "^7.6.0",
+    "@babel/preset-env": "^7.6.3",
+    "@splash/config-jest": "../splash-extends/@splash/config-jest",
+    "babel-eslint": "^10.0.3",
+    "commitizen": "^4.0.3",
+    "cz-conventional-changelog": "^3.0.2",
+    "eslint": "^6.1.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-config-node": "^4.0.0",
+    "eslint-config-prettier": "^6.4.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "husky": "^3.0.9",
+    "jest": "^24.9.0",
+    "lint-staged": "^9.4.2",
+    "prettier": "^1.18.2",
+    "rimraf": "^3.0.0",
+    "semantic-release": "^15.14.0",
+    "stylelint": "^11.0.0",
+    "stylelint-config-standard": "^19.0.0",
+    "stylelint-config-styled-components": "^0.1.1",
+    "stylelint-processor-styled-components": "^1.8.0",
+    "watch": "^1.0.2"
+  },
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  }
+}

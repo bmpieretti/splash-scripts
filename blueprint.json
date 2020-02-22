@@ -1,0 +1,11 @@
+{
+  "output": "./readme.md",
+  "input": "./readme/blueprint.md",
+  "headingPrefix": {
+    "1": "",
+    "2": ""
+  },
+  "badges": [],
+  "checkLinks": true,
+  "line": "water"
+}
