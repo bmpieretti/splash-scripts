@@ -4,7 +4,6 @@
 # @splash-plus/scripts
 [![CircleCI](https://circleci.com/gh/bmpieretti/splash-scripts.svg?style=svg)](https://circleci.com/gh/bmpieretti/splash-scripts)
 
-<strong>Version: 0.0.0-development</strong>
 <br />
 Simple script wrappers for sharing common logic 
 
