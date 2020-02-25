@@ -13,7 +13,10 @@ Simple script wrappers for sharing common logic
 
 * [@splash-plus/scripts](#splash-plusscripts)
 	* [What Is This?](#what-is-this)
-* [Getting Started](#getting-started)
+	* [Getting Started](#getting-started)
+		* [Basic Usage](#basic-usage)
+		* [Config Options](#config-options)
+		* [Command Options](#command-options)
 	* [Usage](#usage)
 		* [Configurations](#configurations)
 	* [Versioning](#versioning)
@@ -34,12 +37,51 @@ Simple script wrappers for sharing common logic
 
 This package aims to extend the power of npm scripts in modern javascript projects by providing an abstraction layer to modern project configuration, while providing everything a developer would need to scaffold configs like webpack, babel, jest, and more with sane configuration defaults. In case these defaults just aren't the right fit for your project, this project can also be extended as needed to still provide a starting point for your project configuration
 
+In simpler terms, it's shareable config management as a cli, so you and I can manage all our jest, webpack, eslint, stylelint, and the other 400 or so configs needed for all the bells and whistles in a modern js project in one place so they can be reusable and extended.
+
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/water.png)](#getting-started)
 
-# Getting Started
+## Getting Started
 
-TODO: Basic usage from an npm script, npx, or how to eject from the abstraction layer and generate configs
+### Basic Usage
+In order to use this module, you first need to create a `splash.config.js`, or one of the config options [cosmic-config](https://github.com/davidtheclark/cosmiconfig) supports. A basic one looks a bit like this:
+```js
+// splash.config.js
+{
+  extends: '@splash-plus/config-jest',
+  commands: [
+    {
+      name: 'echo',
+      resolve: 'local',
+      description: 'Runs the echo command',
+      command: 'echo "Hello World!"'
+    }
+  ]
+}
+```
+
+And from there, you can run the command within an npm script context:
+```json
+// package.json
+{
+  ...,
+  "script": {
+    "echo": "splash-scripts echo",
+    ...
+  },
+  ...
+}
+```
+
+Upon running `npm run echo`, you should see `"Hello World!"` printed to the console!
+
+### Config Options
+TODO: List options for top level fields: extends and commands
+
+### Command Options
+TODO: List options for command level fields: name, resolves, command, description
+
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/water.png)](#usage)
 
