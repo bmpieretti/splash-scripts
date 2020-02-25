@@ -11,5 +11,5 @@ export const runCommand = (command, unknownOptions) => {
   shell.exec(executableCommand);
   // TODO: Read in exception and exit the process on shell error? Be careful though only want to pass through errors,
   // TODO: And not handle them here.
-  // TODO: Can test this by removing the config param passed to the @splash/jest-config.
+  // TODO: Can test this by removing the config param passed to the @splash-plus/jest-config.
 };

@@ -1,3 +1,3 @@
 module.exports = {
-  'src/**/*.js': ['npm run verify', 'git add']
+  'src/**/*.js': ['npm run lint:fix', 'git add']
 };

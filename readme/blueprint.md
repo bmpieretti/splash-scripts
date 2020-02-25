@@ -1,4 +1,6 @@
 # {{ pkg.name }}
+[![CircleCI](https://circleci.com/gh/bmpieretti/splash-scripts.svg?style=svg)](https://circleci.com/gh/bmpieretti/splash-scripts)
+
 <strong>Version: {{ pkg.version }}</strong>
 <br />
 {{ pkg.description }}

@@ -1,5 +1,5 @@
 {
-  "name": "@splash/scripts",
+  "name": "@splash-plus/scripts",
   "version": "0.0.0-development",
   "description": "Simple script wrappers for sharing common logic ",
   "keywords": [
@@ -24,7 +24,6 @@
     "node": ">=10",
     "npm": ">5.2.0"
   },
-  "types": "TODO",
   "bin": {
     "splash-scripts": "./index.js"
   },
@@ -35,18 +34,12 @@
   ],
   "scripts": {
     "dev": "watch 'npm run clean && npm run build' src",
-    "test:command": "node ./index.js jest",
-    "test:command:watch": "node ./index.js jest:watch",
-    "test:command:coverage": "node ./index.js jest:coverage",
-    "test:command:fail": "node ./index.js jest:test:test:test",
-    "test:help": "node ./index.js help",
     "babel": "babel src/ --out-dir lib/ --source-maps --copy-files",
     "build": "npm run clean && npm run babel && npm run clean:test",
-    "lint": "npm run lint:fix && npm run lint:js",
-    "lint:js": "eslint .",
+    "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "verify": "npm run build && npm run lint:fix && npm run lint && npm run test",
-    "test": "jest -o",
+    "verify": "npm run build && npm run lint && npm test",
+    "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "clean": "rimraf lib/",
@@ -55,6 +48,7 @@
     "build:readme": "readme generate --config ./blueprint.json"
   },
   "dependencies": {
+    "@splash-plus/jest-config": "^1.0.3",
     "chalk": "^3.0.0",
     "chance": "^1.1.4",
     "commander": "^3.0.2",
@@ -69,7 +63,6 @@
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/plugin-proposal-optional-chaining": "^7.6.0",
     "@babel/preset-env": "^7.6.3",
-    "@splash/config-jest": "../splash-extends/@splash/config-jest",
     "babel-eslint": "^10.0.3",
     "commitizen": "^4.0.3",
     "cz-conventional-changelog": "^3.0.2",
@@ -93,7 +86,7 @@
     "watch": "^1.0.2"
   },
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   },
   "config": {
     "commitizen": {

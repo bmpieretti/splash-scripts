@@ -1,5 +1,5 @@
 module.exports = {
-  extends: '@splash/config-jest',
+  extends: '@splash-plus/config-jest',
   commands: [
     {
       name: 'print',
