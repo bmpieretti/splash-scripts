@@ -11,7 +11,7 @@ jobs:
       - run:
           name: verify
           command: npm run verify
-      - build:
+      - run:
           name: build
           command: npm run build
       - run:
