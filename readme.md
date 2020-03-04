@@ -23,7 +23,6 @@ Simple script wrappers for sharing common logic
 	* [Developing](#developing)
 		* [Built With](#built-with)
 		* [Prerequisites](#prerequisites)
-		* [Setting up Dev](#setting-up-dev)
 		* [Building](#building)
 		* [Deploying / Publishing](#deploying--publishing)
 		* [Testing](#testing)
@@ -101,7 +100,7 @@ TODO: Examples on overriding, script calling, extending, using the config file i
 
 ## Versioning
 
-Using [SemVer](http://semver.org/) for versioning. For the versions available, see the TODO: [link to tags on this repository](/tags).
+Using [SemVer](http://semver.org/) for versioning. For the versions available, see the release [tags](https://github.com/bmpieretti/splash-scripts/tags).
 
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/water.png)](#developing)
@@ -110,67 +109,64 @@ Using [SemVer](http://semver.org/) for versioning. For the versions available, s
 
 ### Built With
 
-TODO: List main libraries, frameworks used including versions (React, Angular etc...)
+- [Cosmic Config for config management/searching](https://github.com/davidtheclark/cosmiconfig)
+- [Commander for handling cli programs](https://github.com/tj/commander.js/)
+- [ShellJS for executing cli commands from node](https://github.com/shelljs/shelljs)
 
 ### Prerequisites
 
-TODO: What is needed to set up the dev environment. For instance, global dependencies or any other tools. include download links.
-
-### Setting up Dev
-
-TODO: Here's a brief intro about what a developer must do in order to start developing
-the project further:
-
+To get started, simply clone the repo and install node deps
 ```shell
-git clone repo-here
-cd your-project/
 npm install
 ```
 
-And state what happens step-by-step. If there is any virtual environment, local server or database feeder needed, explain here.
-
 ### Building
 
-TODO: If your project needs some additional steps for the developer to build the
-project after some code changes, state them here. for example:
+Once dependencies are installed, you can build the project and test local changes by starting dev mode:
 
 ```shell
-./configure
-make
-make install
+npm run dev
 ```
 
-Here again you should state what actually happens when the code above gets
-executed.
+This will start up a build in watch mode, which will re-babelify all changes as long as the watch server reamins up. In a new terminal, navigate to the root project directory and start developing locally by running
+
+```shell
+node index.js --help
+```
 
 ### Deploying / Publishing
 
-TODO: give instructions on how to build and release a new version
-In case there's some step you have to take that publishes this project to a
-server, this is the right time to state it.
-
-```shell
-packagemanager deploy your-project -s server.com -u username -p password
-```
-
-And again you'd need to tell what the previous code actually does.
+Changes are automatically published upon merging to the master branch via [semantic release](https://github.com/semantic-release/semantic-release)
 
 ### Testing
 
-TODO: Describe and show how to run the tests with code examples.
-Explain what these tests test and why.
+Run tests:
 
 ```shell
-Give an example
+npm run test
+```
+
+Run tests in watch mode:
+
+```shell
+npm run test:watch
+```
+
+Run tests in coverage mode:
+
+```shell
+npm run test:coverage
 ```
 
 ### Style guide
 
-TODO: Explain your code style and show how to check it.
+Simply run `npm run verify` to run any linting or validation commands
 
 ### Commiting
 
-TODO: Explain how commiting works with conventional commits
+Commits utilize [cz-conventional-changelog](https://github.com/commitizen/cz-conventional-changelog) to force commit history to follow [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/).
+
+Once files are staged, simply run `git commit` and husky will automatically run verify before running conventional commits to assist in formatting semantic commits.
 
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/water.png)](#licensing)
