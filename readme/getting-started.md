@@ -21,19 +21,24 @@ And from there, you can run the command within an npm script context:
 ```json
 // package.json
 {
-  ...,
-  "script": {
-    "echo": "splash-scripts echo",
-    ...
+  "scripts": {
+    "echo": "splash-scripts echo"
   },
-  ...
 }
 ```
 
 Upon running `npm run echo`, you should see `"Hello World!"` printed to the console!
 
 ### Config Options
-TODO: List options for top level fields: extends and commands
+| Field                 | Type                                     | Description                                      |
+|-----------------------|------------------------------------------|--------------------------------------------------|
+| extends               | String/Array\<String\>                     | Configs module to be extended, or array of modules to be extended. Currently only supports a module name from a node module <br /><br /> **Note for local builds your package.json can reference a local dir, allowing you to leverage extending a local splash config, but this will fail in ci if your setup fails to find the proper directory** |
+| commands              | Array<[Command](#command-options)>                                           | Array of Command Objects |
 
 ### Command Options
-TODO: List options for command level fields: name, resolves, command, description
+| Field                 | Type                                     | Description                                      |
+|-----------------------|------------------------------------------|--------------------------------------------------|
+| name                  | String                     | *Required* <br /><br /> The reference name of the command, and how splash-scripts resolves the command. This is what splash scripts maps to when passed an argument, for example a command with name `print` with be referenced via `splash-scripts print` |
+| description           | String                                   | A (hopefully) semantic description of what your command does, is used to generate the api on any run of `splash-scripts --help` |
+| resolve           | Enum\<'local'/'npx'\>                                           | *Defaults to 'npx'*<br /><br /> Uses npx by default to run commands via npx, you'll want to set this to `'local'` for any cli package that doesn't exist on the npm registry. For local, you will need the package installed on the os or in the current node context, meaning the package much be installed in your node modules or be globally available on the system |
+| command           | String                                           | *Required* <br /><br /> The actual command to run. Can be whatever cli tool you're trying to abstract out. <br /><br /> **Note: When using a resolve type of `npx`, npx allows specifing the version after the package name, such as `webpack@4`, for more control/safety against breaking changes. Do note that I have seen a few packages only grab the latest, so in that case setting it to local and requiring the needed module as a dependency (peerDep for extended modules) might be the best solution** |
