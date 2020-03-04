@@ -109,9 +109,9 @@ Using [SemVer](http://semver.org/) for versioning. For the versions available, s
 
 ### Built With
 
-- [Cosmic Config for config management/searching](https://github.com/davidtheclark/cosmiconfig)
-- [Commander for handling cli programs](https://github.com/tj/commander.js/)
-- [ShellJS for executing cli commands from node](https://github.com/shelljs/shelljs)
+- [Cosmic Config](https://github.com/davidtheclark/cosmiconfig) for config management/searching
+- [Commander](https://github.com/tj/commander.js/) for handling cli programs
+- [ShellJs](https://github.com/shelljs/shelljs) for executing cli commands from node
 
 ### Prerequisites
 
