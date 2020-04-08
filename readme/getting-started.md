@@ -4,7 +4,7 @@
 In order to use this module, you first need to create a `splash.config.js`, or one of the config options [cosmic-config](https://github.com/davidtheclark/cosmiconfig) supports. A basic one looks a bit like this:
 ```js
 // splash.config.js
-{
+module.exports = {
   extends: '@splash-plus/config-jest',
   commands: [
     {
@@ -28,6 +28,31 @@ And from there, you can run the command within an npm script context:
 ```
 
 Upon running `npm run echo`, you should see `"Hello World!"` printed to the console!
+
+**Note:** The `splash.config.js` is not required to be a js file, and can be anything supported by [Cosmic Config](https://github.com/davidtheclark/cosmiconfig)
+
+### Overriding configs
+
+Other configs can be extended using a module name as a single string, or a list of module names as an array of strings:
+```js
+// splash.config.js
+module.exports = {
+  extends: '@splash-plus/config-jest',
+  commands: []
+}
+```
+
+or
+
+```js
+// splash.config.js
+module.exports = {
+  extends: ['@splash-plus/config-jest', '@splash-plus/config-webpack'],
+  commands: []
+}
+```
+
+When extending configs, take care to watch the name of the commands that get imported. Any commands that share the name with resolve in the order they are extended, with the current `splash.config.js` overriding any extended commands.
 
 ### Config Options
 | Field                 | Type                                     | Description                                      |
