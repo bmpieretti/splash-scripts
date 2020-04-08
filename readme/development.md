@@ -21,11 +21,13 @@ Once dependencies are installed, you can build the project and test local change
 npm run dev
 ```
 
-This will start up a build in watch mode, which will re-babelify all changes as long as the watch server reamins up. In a new terminal, navigate to the root project directory and start developing locally by running
+This will start up a build in watch mode, which will re-babelify all changes as long as the watch server remains up. In a new terminal, navigate to the root project directory and start testing locally by running
 
 ```shell
 node index.js --help
 ```
+
+This will print out all the available commands, edit the `splash.config.js` to test out any further commands
 
 ### Deploying / Publishing
 
