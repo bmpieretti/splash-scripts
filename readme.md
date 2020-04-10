@@ -99,7 +99,7 @@ When extending configs, take care to watch the name of the commands that get imp
 ### Config Options
 | Field                 | Type                                     | Description                                      |
 |-----------------------|------------------------------------------|--------------------------------------------------|
-| extends               | String/Array\<String\>                     | Configs module to be extended, or array of modules to be extended. Currently only supports a module name from a node module <br /><br /> **Note:** For local builds your package.json can reference a local dir, allowing you to leverage extending a local splash config, but this will fail in ci if your setup fails to find the proper directory |
+| extends               | String/Array\<String\>                     | Configs module to be extended, or array of modules to be extended. Can be either an absolute path, relative path, or name of a node module that must be available in the current projects node_modules folder <br /><br /> **Note:** For local builds using node modules, your package.json can reference a local dir, allowing you to leverage extending a local splash config, but this will fail in ci if your setup fails to find the proper directory |
 | commands              | Array<[Command](#command-options)>                                           | Array of Command Objects |
 
 ### Command Options

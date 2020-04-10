@@ -1,3 +1,4 @@
+import path from 'path';
 import { cosmiconfig } from 'cosmiconfig';
 import ConfigException from '../exceptions/ConfigException';
 import Config from '../models/Config';
@@ -5,6 +6,14 @@ import Config from '../models/Config';
 const explorer = cosmiconfig('splash');
 let currentConfigDepth = 1;
 let allConfigs = [];
+
+const resolveExtends = (dirPath, extendedPath) => {
+  if (path.isAbsolute(extendedPath)) return extendedPath;
+  if (extendedPath.charAt(0) === '.')
+    return path.resolve(dirPath, extendedPath);
+
+  return `${dirPath}/node_modules/${extendedPath}`;
+};
 
 const getDirPath = filepath =>
   filepath
@@ -16,7 +25,7 @@ const search = async searchPath => {
   try {
     const result = await explorer.search(searchPath);
 
-    if (searchPath && !result.filepath.includes(searchPath)) return null;
+    if (searchPath && !result.filepath?.includes?.(searchPath)) return null;
 
     return result;
   } catch (error) {
@@ -29,8 +38,8 @@ const retrieveExtends = async (config, dirPath) => {
   const { extendsArg } = config;
   allConfigs.unshift(config);
   if (!extendsArg?.length) return;
-  const promises = extendsArg.map(extendedConfigName => {
-    return search(`${dirPath}/node_modules/${extendedConfigName}`);
+  const promises = extendsArg.map(extendedPath => {
+    return search(resolveExtends(dirPath, extendedPath));
   });
 
   const loadedConfigs = (await Promise.all(promises)).filter(item => !!item);
