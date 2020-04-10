@@ -53,6 +53,7 @@ test('Cosmic Config Service: Should return multiple configs when extended, stopp
   const cosmicConfig2 = Symbol('cosmicConfig2');
   const extendsArg = ['test'];
   const extendsArg2 = [];
+  const extendedFilepath = 'path/to/node_modules/test';
 
   const foundConfig = {
     config: cosmicConfig,
@@ -61,7 +62,7 @@ test('Cosmic Config Service: Should return multiple configs when extended, stopp
 
   const foundConfig2 = {
     config: cosmicConfig2,
-    filepath: 'path2/to2/test2'
+    filepath: `${extendedFilepath}/splash.config.js`
   };
 
   const search = jest
@@ -97,7 +98,7 @@ test('Cosmic Config Service: Should return multiple configs when extended, stopp
 
   expect(Config).toHaveBeenCalledTimes(2);
   expect(Config).toHaveBeenNthCalledWith(1, cosmicConfig, 'path/to');
-  expect(Config).toHaveBeenNthCalledWith(2, cosmicConfig2, 'path2/to2', 1);
+  expect(Config).toHaveBeenNthCalledWith(2, cosmicConfig2, extendedFilepath, 1);
   expect(searchStub).toHaveBeenCalledTimes(2);
   expect(searchStub).toHaveBeenNthCalledWith(1, undefined);
   expect(searchStub).toHaveBeenNthCalledWith(
@@ -114,6 +115,7 @@ test('Cosmic Config Service: Should return multiple configs when extended, stopp
   const cosmicConfig = Symbol('cosmicConfig');
   const cosmicConfig2 = Symbol('cosmicConfig2');
   const extendsArg = ['test'];
+  const extendedFilepath = 'path/to/node_modules/test';
 
   const foundConfig = {
     config: cosmicConfig,
@@ -122,7 +124,7 @@ test('Cosmic Config Service: Should return multiple configs when extended, stopp
 
   const foundConfig2 = {
     config: cosmicConfig2,
-    filepath: 'path2/to2/test2'
+    filepath: `${extendedFilepath}/splash.config.js`
   };
 
   const search = jest
@@ -156,7 +158,57 @@ test('Cosmic Config Service: Should return multiple configs when extended, stopp
 
   expect(Config).toHaveBeenCalledTimes(2);
   expect(Config).toHaveBeenNthCalledWith(1, cosmicConfig, 'path/to');
-  expect(Config).toHaveBeenNthCalledWith(2, cosmicConfig2, 'path2/to2', 1);
+  expect(Config).toHaveBeenNthCalledWith(2, cosmicConfig2, extendedFilepath, 1);
+  expect(searchStub).toHaveBeenCalledTimes(2);
+  expect(searchStub).toHaveBeenNthCalledWith(1, undefined);
+  expect(searchStub).toHaveBeenNthCalledWith(
+    2,
+    `path/to/node_modules/${extendsArg[0]}`
+  );
+  expect(configs).toEqual(expectedConfigs);
+});
+
+test('Cosmic Config Service: Should not include configs when search fails to find at the given path', async () => {
+  // TODO:
+  // eslint-disable-next-line global-require
+  const { getConfigs } = require('../cosmicconfig');
+  const searchStub = cosmiconfig().search;
+  const cosmicConfig = Symbol('cosmicConfig');
+  const extendsArg = ['invalid-config-path'];
+
+  const foundConfig = {
+    config: cosmicConfig,
+    filepath: 'path/to/test'
+  };
+
+  const search = jest
+    .fn()
+    .mockReturnValueOnce(Promise.resolve(foundConfig))
+    .mockReturnValueOnce(Promise.resolve(foundConfig));
+
+  const config = jest
+    .fn()
+    .mockReturnValueOnce({
+      extendsArg
+    })
+    .mockReturnValueOnce({
+      test: 'test'
+    });
+
+  searchStub.mockImplementation(() => search());
+
+  Config.mockImplementation(() => config());
+
+  const configs = await getConfigs();
+
+  const expectedConfigs = [
+    {
+      extendsArg
+    }
+  ];
+
+  expect(Config).toHaveBeenCalledTimes(1);
+  expect(Config).toHaveBeenNthCalledWith(1, cosmicConfig, 'path/to');
   expect(searchStub).toHaveBeenCalledTimes(2);
   expect(searchStub).toHaveBeenNthCalledWith(1, undefined);
   expect(searchStub).toHaveBeenNthCalledWith(
@@ -177,6 +229,9 @@ test('Cosmic Config Service: Should recursively fetch multiple configs when exte
   const extendsArg = ['test'];
   const extendsArg2 = ['test2'];
   const extendsArg3 = ['test3'];
+  const extendedFilepath = 'path/to/node_modules/test';
+  const extendedFilepath2 = 'path/to/node_modules/test2';
+  const extendedFilepath3 = 'path/to/node_modules/test3';
 
   const foundConfig = {
     config: cosmicConfig,
@@ -185,17 +240,17 @@ test('Cosmic Config Service: Should recursively fetch multiple configs when exte
 
   const foundConfig2 = {
     config: cosmicConfig2,
-    filepath: 'path2/to2/test2'
+    filepath: `${extendedFilepath}/splash.config.js`
   };
 
   const foundConfig3 = {
     config: cosmicConfig3,
-    filepath: 'path3/to3/test3'
+    filepath: `${extendedFilepath2}/splash.config.js`
   };
 
   const foundConfig4 = {
     config: cosmicConfig4,
-    filepath: 'path4/to4/test4'
+    filepath: `${extendedFilepath3}/splash.config.js`
   };
 
   const search = jest
@@ -251,9 +306,19 @@ test('Cosmic Config Service: Should recursively fetch multiple configs when exte
 
   expect(Config).toHaveBeenCalledTimes(4);
   expect(Config).toHaveBeenNthCalledWith(1, cosmicConfig, 'path/to');
-  expect(Config).toHaveBeenNthCalledWith(2, cosmicConfig2, 'path2/to2', 1);
-  expect(Config).toHaveBeenNthCalledWith(3, cosmicConfig3, 'path3/to3', 2);
-  expect(Config).toHaveBeenNthCalledWith(4, cosmicConfig4, 'path4/to4', 3);
+  expect(Config).toHaveBeenNthCalledWith(2, cosmicConfig2, extendedFilepath, 1);
+  expect(Config).toHaveBeenNthCalledWith(
+    3,
+    cosmicConfig3,
+    extendedFilepath2,
+    2
+  );
+  expect(Config).toHaveBeenNthCalledWith(
+    4,
+    cosmicConfig4,
+    extendedFilepath3,
+    3
+  );
   expect(searchStub).toHaveBeenCalledTimes(4);
   expect(searchStub).toHaveBeenNthCalledWith(1, undefined);
   expect(searchStub).toHaveBeenNthCalledWith(
