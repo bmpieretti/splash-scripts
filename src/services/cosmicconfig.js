@@ -45,7 +45,7 @@ const retrieveExtends = async (config, dirPath) => {
   const loadedConfigs = (await Promise.all(promises)).filter(item => !!item);
 
   const loadedPromises = loadedConfigs.map(loadedConfig => {
-    const { config: extendedConfig, filepath } = loadedConfig || {};
+    const { config: extendedConfig, filepath } = loadedConfig;
     const dirName = getDirPath(filepath);
     const configClass = new Config(extendedConfig, dirName, currentConfigDepth);
     currentConfigDepth += 1;
