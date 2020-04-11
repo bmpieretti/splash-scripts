@@ -38,7 +38,7 @@
     "build": "npm run clean && npm run babel && npm run clean:test",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "verify": "npm run build && npm run lint && npm test",
+    "verify": "npm run build && npm run lint && npm test && npm run test:coverage",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
