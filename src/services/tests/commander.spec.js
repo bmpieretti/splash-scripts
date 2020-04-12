@@ -5,12 +5,14 @@ import {
   init,
   parse,
   buildCommands,
-  handleUnknownCommands
+  handleUnknownCommands,
+  buildHelp
 } from '../commander';
 import { unknownOptions } from '../../helpers';
 import getProcessArgs from '../../helpers/getProcessArgs';
 import Commander from '../../models/Commander';
 import { UNKNOWN_COMMAND_ERROR_MESSAGE } from '../../configs/textEnums';
+import helpString from '../../configs/helpString';
 
 const chance = new Chance();
 
@@ -355,4 +357,23 @@ test('Commander Service: Should handle unknown commands with tailored error', ()
     expect(error.message).toBe(UNKNOWN_COMMAND_ERROR_MESSAGE('test --option'));
     expect(error.type).toBe('unknown-command');
   }
+});
+
+test('Scripts Index: Should log error stack over error when defined', async () => {
+  const onStub = program.on;
+
+  buildHelp();
+  const callback = onStub.mock.calls[0][1];
+  const consoleLogStub = jest.fn();
+
+  // eslint-disable-next-line no-console
+  console.log = consoleLogStub;
+  callback();
+
+  expect(onStub).toHaveBeenCalledTimes(1);
+  expect(onStub.mock.calls[0][0]).toBe('--help');
+  expect(consoleLogStub).toHaveBeenCalledTimes(helpString.length);
+  helpString.forEach((helpStringItem, index) => {
+    expect(consoleLogStub).toHaveBeenNthCalledWith(index + 1, helpStringItem);
+  });
 });

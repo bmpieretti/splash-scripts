@@ -2,7 +2,8 @@ import {
   init,
   buildCommands,
   handleUnknownCommands,
-  parse
+  parse,
+  buildHelp
 } from '../../services/commander';
 import { runCommand } from '../../services/shelljs';
 import { getSplashCommands } from '../../services/splashconfig';
@@ -20,6 +21,7 @@ jest.mock('../../services/commander', () => ({
   init: jest.fn(),
   buildCommands: jest.fn(),
   handleUnknownCommands: jest.fn(),
+  buildHelp: jest.fn(),
   parse: jest.fn()
 }));
 
@@ -42,6 +44,8 @@ test('Scripts Index: Should call root scripts with dependencies', async () => {
   expect(buildCommands).toHaveBeenCalledWith(config, runCommand);
   expect(handleUnknownCommands).toHaveBeenCalledTimes(1);
   expect(handleUnknownCommands).toHaveBeenCalledWith();
+  expect(buildHelp).toHaveBeenCalledTimes(1);
+  expect(buildHelp).toHaveBeenCalledWith();
   expect(parse).toHaveBeenCalledTimes(1);
   expect(parse).toHaveBeenCalledWith();
 });

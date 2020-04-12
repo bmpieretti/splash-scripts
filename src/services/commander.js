@@ -4,6 +4,7 @@ import { unknownOptions } from '../helpers';
 import getProcessArgs from '../helpers/getProcessArgs';
 import Commander from '../models/Commander';
 import UnknownCommandException from '../exceptions/UnknownCommandException';
+import helpString from '../configs/helpString';
 
 const buildCommand = (command, callback) => {
   if (!command?.commandName) return;
@@ -42,12 +43,11 @@ export const handleUnknownCommands = () => {
   });
 };
 
-// TODO: Build out help
-// export const buildHelp = commands => {
-//   program.on('--help', () => {
-//     console.log('');
-//     console.log('Examples:');
-//     console.log('  $ custom-help --help');
-//     console.log('  $ custom-help -h');
-//   });
-// };
+export const buildHelp = () => {
+  program.on('--help', () => {
+    helpString.forEach(helpStringItem => {
+      // eslint-disable-next-line no-console
+      console.log(helpStringItem);
+    });
+  });
+};
