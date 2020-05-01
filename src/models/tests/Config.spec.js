@@ -81,6 +81,49 @@ test('Config Model: Should init Config object with the given path', () => {
   expect(config.warnings.length).toBe(0);
 });
 
+test('Config Model: Should init Config object with the given path having only extends', () => {
+  const path = Symbol('path');
+
+  ConfigCommands.mockImplementation(() => {
+    return {
+      warnings: [],
+      errors: []
+    };
+  });
+
+  const configOptions = {
+    extends: 'valid path'
+  };
+
+  const config = new Config(configOptions, path);
+
+  expect(ConfigCommands).toHaveBeenCalledTimes(1);
+  expect(ConfigCommands).toHaveBeenCalledWith([], path);
+  expect(config.errors.length).toBe(0);
+});
+
+test('Config Model: Should init Config object with the given path having extends and empty commands array', () => {
+  const path = Symbol('path');
+
+  ConfigCommands.mockImplementation(() => {
+    return {
+      warnings: [],
+      errors: []
+    };
+  });
+
+  const configOptions = {
+    extends: 'valid path',
+    commands: []
+  };
+
+  const config = new Config(configOptions, path);
+
+  expect(ConfigCommands).toHaveBeenCalledTimes(1);
+  expect(ConfigCommands).toHaveBeenCalledWith([], path);
+  expect(config.errors.length).toBe(0);
+});
+
 test('Config Model: Should set extends on class when extends is string', () => {
   const configOptions = {
     extends: 'test'

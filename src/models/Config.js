@@ -62,7 +62,7 @@ export default class Config {
     this.errors.push(...validateConfigOptions(config, depth));
     if (this.errors?.length) return;
     this.extendsArg = handleExtends(config?.extends);
-    const configCommands = new ConfigCommands(config.commands, this.path);
+    const configCommands = new ConfigCommands(config.commands || [], this.path);
     this.preBuiltCommands = configCommands.preBuiltCommands;
     this.errors.push(...configCommands.errors);
     this.warnings.push(...configCommands.warnings);

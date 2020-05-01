@@ -48,7 +48,7 @@
     "build:readme": "readme generate --config ./blueprint.json"
   },
   "dependencies": {
-    "@splash-plus/jest-config": "^1.0.3",
+    "@splash-plus/jest-config": "^1.0.5",
     "chalk": "^3.0.0",
     "chance": "^1.1.4",
     "commander": "^3.0.2",
