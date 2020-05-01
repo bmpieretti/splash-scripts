@@ -47,6 +47,6 @@ test('fileIO: File should reject promise when file fails to write', async () => 
   try {
     await writeFile(filepath, null);
   } catch (error) {
-    expect(error).toBeTruthy();
+    expect(error).toBeInstanceOf(Error);
   }
 });

@@ -16,7 +16,7 @@ export const readFile = filename =>
 export const writeFile = (filename, data) =>
   new Promise((resolve, reject) => {
     fs.writeFile(path.resolve(process.cwd(), filename), data, 'utf8', error => {
-      if (error) reject(error);
+      if (error) reject(new Error(error.message));
       resolve();
     });
   });
