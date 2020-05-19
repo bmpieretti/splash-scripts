@@ -1,9 +1,10 @@
+import { chance } from '@splash-plus/jest-config';
 import CommandList from '../CommandList';
 import { VALID_CONFIGS_ERROR_MESSAGE } from '../../configs/textEnums';
 
 test('CommandList Model: Should build minimal command from the given config', () => {
-  const command = 'test';
-  const commandName = 'testKey';
+  const command = chance.word();
+  const commandName = chance.word();
   const allConfigs = [
     {
       preBuiltCommands: {
@@ -26,10 +27,10 @@ test('CommandList Model: Should build minimal command from the given config', ()
 });
 
 test('CommandList Model: Should merge all configs before creating commands', () => {
-  const command = 'test';
-  const commandName = 'testKey';
-  const command2 = 'test2';
-  const commandName2 = 'testKey2';
+  const command = chance.word();
+  const commandName = chance.word();
+  const command2 = chance.word();
+  const commandName2 = chance.word();
   const allConfigs = [
     {
       preBuiltCommands: {
@@ -64,8 +65,8 @@ test('CommandList Model: Should merge all configs before creating commands', () 
 });
 
 test('CommandList Model: Should build npx commands from the given config', () => {
-  const command = 'test';
-  const commandName = 'testKey';
+  const command = chance.word();
+  const commandName = chance.word();
   const allConfigs = [
     {
       preBuiltCommands: {
@@ -90,8 +91,8 @@ test('CommandList Model: Should build npx commands from the given config', () =>
 });
 
 test('CommandList Model: Should build local commands from the given config', () => {
-  const command = 'test';
-  const commandName = 'testKey';
+  const command = chance.word();
+  const commandName = chance.word();
   const allConfigs = [
     {
       preBuiltCommands: {
@@ -116,18 +117,18 @@ test('CommandList Model: Should build local commands from the given config', () 
 });
 
 test('CommandList Model: Should have no commands on error', () => {
-  const allConfigs = 'test';
+  const allConfigs = chance.word();
   const commandList = new CommandList(allConfigs);
 
-  expect(commandList.errors.length).toBe(1);
+  expect(commandList.errors).toHaveLength(1);
   expect(commandList.commands).toEqual([]);
 });
 
 test('CommandList Model: Should error when configs are not array', () => {
-  const allConfigs = 'test';
+  const allConfigs = chance.word();
   const commandList = new CommandList(allConfigs);
 
-  expect(commandList.errors.length).toBe(1);
+  expect(commandList.errors).toHaveLength(1);
   expect(commandList.errors[0].message).toBe(VALID_CONFIGS_ERROR_MESSAGE);
   expect(commandList.errors[0].type).toBe('validation-exception');
 });
@@ -136,7 +137,7 @@ test('CommandList Model: Should error when configs are empty array', () => {
   const allConfigs = [];
   const commandList = new CommandList(allConfigs);
 
-  expect(commandList.errors.length).toBe(1);
+  expect(commandList.errors).toHaveLength(1);
   expect(commandList.errors[0].message).toBe(VALID_CONFIGS_ERROR_MESSAGE);
   expect(commandList.errors[0].type).toBe('validation-exception');
 });

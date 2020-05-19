@@ -1,5 +1,5 @@
 import program from 'commander';
-import Chance from 'chance';
+import { chance } from '@splash-plus/jest-config';
 import { version } from '../../../package.json';
 import {
   init,
@@ -11,29 +11,13 @@ import {
 import { unknownOptions } from '../../helpers';
 import getProcessArgs from '../../helpers/getProcessArgs';
 import Commander from '../../models/Commander';
-import { UNKNOWN_COMMAND_ERROR_MESSAGE } from '../../configs/textEnums';
 import helpString from '../../configs/helpString';
+import UnknownCommandException from '../../exceptions/UnknownCommandException';
 
-const chance = new Chance();
-
-jest.mock('../../helpers', () => ({
-  unknownOptions: jest.fn()
-}));
-
+jest.mock('commander');
+jest.mock('../../helpers');
+jest.mock('../../helpers/getProcessArgs.js');
 jest.mock('../../models/Commander');
-
-jest.mock('commander', () => ({
-  init: jest.fn(),
-  parse: jest.fn(),
-  version: jest.fn(),
-  description: jest.fn(),
-  allowUnknownOption: jest.fn(),
-  command: jest.fn(),
-  action: jest.fn(),
-  on: jest.fn()
-}));
-
-jest.mock('../../helpers/getProcessArgs.js', () => jest.fn());
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -293,9 +277,11 @@ test('Commander Service: Should not scaffold commander command when no commandNa
   const actionStub = program.action;
   const unknownOptionsSymbol = Symbol('unknownOptions');
   const actionReturn = chance.n(() => Symbol('actionReturn'), chance.d6());
-  const commands = {
-    description: 'test'
-  };
+  const commands = [
+    {
+      description: chance.sentence()
+    }
+  ];
 
   Commander.mockImplementation(() => ({
     unknownOptions: unknownOptionsSymbol
@@ -313,36 +299,9 @@ test('Commander Service: Should not scaffold commander command when no commandNa
   expect(allowUnknownOptionStub).not.toHaveBeenCalled();
 });
 
-test('Commander Service: Should not scaffold commander command when no commandName passed', () => {
-  const commandStub = program.command;
-  const descriptionStub = program.description;
-  const allowUnknownOptionStub = program.allowUnknownOption;
-  const actionStub = program.action;
-  const unknownOptionsSymbol = Symbol('unknownOptions');
-  const actionReturn = chance.n(() => Symbol('actionReturn'), chance.d6());
-  const commands = {
-    commandName: 'test'
-  };
-
-  Commander.mockImplementation(() => ({
-    unknownOptions: unknownOptionsSymbol
-  }));
-
-  commandStub.mockReturnValue(program);
-  descriptionStub.mockReturnValue(program);
-  allowUnknownOptionStub.mockReturnValue(program);
-  actionStub.mockImplementation(callback => callback(...actionReturn));
-
-  buildCommands(commands);
-
-  expect(commandStub).not.toHaveBeenCalled();
-  expect(descriptionStub).not.toHaveBeenCalled();
-  expect(allowUnknownOptionStub).not.toHaveBeenCalled();
-});
-
-test('Commander Service: Should handle unknown commands with tailored error', () => {
+test('Commander Service: Should handle unknown commands with tailored error', async () => {
   const onStub = program.on;
-  program.args = ['test', '--option'];
+  program.args = ['yo', '--option'];
 
   handleUnknownCommands();
   const callback = onStub.mock.calls[0][1];
@@ -350,13 +309,7 @@ test('Commander Service: Should handle unknown commands with tailored error', ()
   expect(onStub).toHaveBeenCalledTimes(1);
   expect(onStub.mock.calls[0][0]).toBe('command:*');
 
-  try {
-    callback();
-    expect(true).toBe(false);
-  } catch (error) {
-    expect(error.message).toBe(UNKNOWN_COMMAND_ERROR_MESSAGE('test --option'));
-    expect(error.type).toBe('unknown-command');
-  }
+  expect(() => callback()).toThrow(UnknownCommandException);
 });
 
 test('Scripts Index: Should log error stack over error when defined', async () => {
@@ -373,6 +326,7 @@ test('Scripts Index: Should log error stack over error when defined', async () =
   expect(onStub).toHaveBeenCalledTimes(1);
   expect(onStub.mock.calls[0][0]).toBe('--help');
   expect(consoleLogStub).toHaveBeenCalledTimes(helpString.length);
+
   helpString.forEach((helpStringItem, index) => {
     expect(consoleLogStub).toHaveBeenNthCalledWith(index + 1, helpStringItem);
   });

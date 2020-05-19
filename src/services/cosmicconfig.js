@@ -11,7 +11,6 @@ const resolveExtends = (dirPath, extendedPath) => {
   if (path.isAbsolute(extendedPath)) return extendedPath;
   if (extendedPath.charAt(0) === '.')
     return path.resolve(dirPath, extendedPath);
-
   return `${dirPath}/node_modules/${extendedPath}`;
 };
 
@@ -24,9 +23,9 @@ const getDirPath = filepath =>
 const search = async searchPath => {
   try {
     const result = await explorer.search(searchPath);
-
-    if (searchPath && !result.filepath?.includes?.(searchPath)) return null;
-
+    const foundPathOutsideSearchPath =
+      searchPath && !result.filepath?.includes?.(searchPath);
+    if (foundPathOutsideSearchPath) return null;
     return result;
   } catch (error) {
     allConfigs = [];
@@ -41,18 +40,14 @@ const retrieveExtends = async (config, dirPath) => {
   const promises = extendsArg.map(extendedPath => {
     return search(resolveExtends(dirPath, extendedPath));
   });
-
   const loadedConfigs = (await Promise.all(promises)).filter(item => !!item);
-
   const loadedPromises = loadedConfigs.map(loadedConfig => {
     const { config: extendedConfig, filepath } = loadedConfig;
     const dirName = getDirPath(filepath);
     const configClass = new Config(extendedConfig, dirName, currentConfigDepth);
     currentConfigDepth += 1;
-
     return retrieveExtends(configClass, dirPath);
   });
-
   await Promise.all(loadedPromises);
 };
 

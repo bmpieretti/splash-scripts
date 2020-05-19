@@ -1,3 +1,4 @@
+import { chance } from '@splash-plus/jest-config';
 import {
   init,
   buildCommands,
@@ -9,21 +10,8 @@ import { runCommand } from '../../services/shelljs';
 import { getSplashCommands } from '../../services/splashconfig';
 import main from '../index';
 
-jest.mock('../../services/splashconfig', () => ({
-  runCommand: Symbol('runCommand')
-}));
-
-jest.mock('../../services/splashconfig', () => ({
-  getSplashCommands: jest.fn()
-}));
-
-jest.mock('../../services/commander', () => ({
-  init: jest.fn(),
-  buildCommands: jest.fn(),
-  handleUnknownCommands: jest.fn(),
-  buildHelp: jest.fn(),
-  parse: jest.fn()
-}));
+jest.mock('../../services/splashconfig');
+jest.mock('../../services/commander');
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -31,6 +19,7 @@ beforeEach(() => {
 
 test('Scripts Index: Should call root scripts with dependencies', async () => {
   expect.hasAssertions();
+
   const config = Symbol('config');
   const getSplashCommandsStub = jest.fn().mockResolvedValue(config);
 
@@ -52,7 +41,8 @@ test('Scripts Index: Should call root scripts with dependencies', async () => {
 
 test('Scripts Index: Should log errors', async () => {
   expect.hasAssertions();
-  const error = { message: 'test', type: 'error-type' };
+
+  const error = { message: chance.word() };
   const getSplashCommandsStub = jest.fn().mockRejectedValue(error);
 
   getSplashCommands.mockImplementation(() => getSplashCommandsStub());
@@ -73,7 +63,8 @@ test('Scripts Index: Should log errors', async () => {
 
 test('Scripts Index: Should log error stack over error when defined', async () => {
   expect.hasAssertions();
-  const error = { message: 'test', type: 'error-type', stack: 'error-stack' };
+
+  const error = { stack: 'error-stack' };
   const getSplashCommandsStub = jest.fn().mockRejectedValue(error);
 
   getSplashCommands.mockImplementation(() => getSplashCommandsStub());

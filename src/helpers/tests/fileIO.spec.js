@@ -1,52 +1,64 @@
 import fs from 'fs';
 import path from 'path';
+import { chance } from '@splash-plus/jest-config';
 import { readFile, writeFile } from '../fileIO';
 
+jest.mock('fs');
+
+beforeEach(() => {
+  process.cwd = jest.fn().mockReturnValue('dirname/');
+});
+
 test('fileIO: File should resolve promise when successfully read', async () => {
-  expect.hasAssertions();
+  const dataSymbol = Symbol('data');
+  const filename = `${chance.word()}.${chance.word()}`;
 
-  const expectedJson = {
-    hello: 'world'
-  };
+  fs.readFile.mockImplementation((file, option, cb) => cb(null, dataSymbol));
 
-  const actualJson = await readFile('./src/helpers/tests/files/test.json');
-  expect(JSON.parse(actualJson)).toEqual(expectedJson);
+  const data = await readFile(filename);
+
+  expect(data).toBe(dataSymbol);
+  expect(fs.readFile).toHaveBeenCalledTimes(1);
+  expect(fs.readFile).toHaveBeenCalledWith(
+    path.resolve(process.cwd(), filename),
+    'utf8',
+    expect.any(Function)
+  );
 });
 
 test('fileIO: File should reject promise when error occurs', async () => {
-  expect.hasAssertions();
+  const error = new Error('message');
+  const dataSymbol = Symbol('data');
+  const filename = `${chance.word()}.${chance.word()}`;
 
-  try {
-    await readFile('./test1.json');
-  } catch (error) {
-    expect(error).toBeTruthy();
-  }
+  fs.readFile.mockImplementation((file, option, cb) => cb(error, dataSymbol));
+
+  await expect(readFile(filename)).rejects.toThrow(error);
 });
 
 test('fileIO: File should resolve promise when successfully written', async () => {
-  expect.hasAssertions();
-  const filepath = './src/helpers/tests/files/test-write.json';
+  const dataSymbol = Symbol('data');
+  const filename = `${chance.word()}.${chance.word()}`;
 
-  const expectedData = {
-    hello: 'world'
-  };
+  fs.writeFile.mockImplementation((file, data, option, cb) => cb(null));
 
-  await writeFile(filepath, JSON.stringify(expectedData));
+  await writeFile(filename, dataSymbol);
 
-  const writtenData = await readFile(filepath);
-
-  expect(JSON.parse(writtenData)).toEqual(expectedData);
-
-  await fs.unlink(path.resolve(process.cwd(), filepath), () => null);
+  expect(fs.writeFile).toHaveBeenCalledTimes(1);
+  expect(fs.writeFile).toHaveBeenCalledWith(
+    path.resolve(process.cwd(), filename),
+    dataSymbol,
+    'utf8',
+    expect.any(Function)
+  );
 });
 
 test('fileIO: File should reject promise when file fails to write', async () => {
-  expect.hasAssertions();
-  const filepath = '$src/helpers/tests/files/test-write1.json';
+  const error = new Error('message');
+  const dataSymbol = Symbol('data');
+  const filename = `${chance.word()}.${chance.word()}`;
 
-  try {
-    await writeFile(filepath, null);
-  } catch (error) {
-    expect(error).toBeInstanceOf(Error);
-  }
+  fs.writeFile.mockImplementation((file, data, option, cb) => cb(error));
+
+  await expect(writeFile(filename, dataSymbol)).rejects.toThrow(error);
 });

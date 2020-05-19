@@ -1,4 +1,5 @@
 import shelljs from 'shelljs';
+import { chance } from '@splash-plus/jest-config';
 import { runCommand } from '../shelljs';
 
 const ENABLE_OUTPUT_COLOR = '--color=always';
@@ -12,48 +13,44 @@ beforeEach(() => {
 });
 
 test('ShellJs Service: Should run shelljs command with the passed command', () => {
-  const execStub = shelljs.exec;
   const command = {
-    fullCommand: 'test'
+    fullCommand: chance.word()
   };
 
   runCommand(command);
 
   const expectedMockArgs = `${command.fullCommand} ${ENABLE_OUTPUT_COLOR}`;
 
-  expect(execStub).toHaveBeenCalledTimes(1);
-  expect(execStub).toHaveBeenCalledWith(expectedMockArgs);
+  expect(shelljs.exec).toHaveBeenCalledTimes(1);
+  expect(shelljs.exec).toHaveBeenCalledWith(expectedMockArgs);
 });
 
 test('ShellJs Service: Should run shelljs command with the passed options', () => {
-  const execStub = shelljs.exec;
   const command = {
-    fullCommand: 'test'
+    fullCommand: chance.word()
   };
-  const unknownOptions = 'options';
+  const unknownOptions = chance.word();
 
   runCommand(command, unknownOptions);
 
   const expectedMockArgs = `${command.fullCommand} ${unknownOptions} ${ENABLE_OUTPUT_COLOR}`;
 
-  expect(execStub).toHaveBeenCalledTimes(1);
-  expect(execStub).toHaveBeenCalledWith(expectedMockArgs);
+  expect(shelljs.exec).toHaveBeenCalledTimes(1);
+  expect(shelljs.exec).toHaveBeenCalledWith(expectedMockArgs);
 });
 
-test('ShellJs Service: Should run shelljs command with the passed options', () => {
-  const execStub = shelljs.exec;
+test('ShellJs Service: Should not run shelljs command with null command', () => {
   const command = null;
 
   runCommand(command);
 
-  expect(execStub).not.toHaveBeenCalled();
+  expect(shelljs.exec).not.toHaveBeenCalled();
 });
 
-test('ShellJs Service: Should run shelljs command with the passed options', () => {
-  const execStub = shelljs.exec;
+test('ShellJs Service: Should not run shelljs command empty object command', () => {
   const command = {};
 
   runCommand(command);
 
-  expect(execStub).not.toHaveBeenCalled();
+  expect(shelljs.exec).not.toHaveBeenCalled();
 });

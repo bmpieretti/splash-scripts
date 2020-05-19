@@ -1,3 +1,4 @@
+import { chance } from '@splash-plus/jest-config';
 import Config from '../Config';
 import {
   EXTENDS_TYPING_ERROR_MESSAGE,
@@ -27,8 +28,8 @@ test('Config Model: Should init Config object with valid commands', () => {
   const configOptions = {
     commands: [
       {
-        name: 'test',
-        command: 'test command'
+        name: chance.word(),
+        command: chance.sentence()
       }
     ]
   };
@@ -37,15 +38,15 @@ test('Config Model: Should init Config object with valid commands', () => {
 
   expect(config.originalConfig).toBe(configOptions);
   expect(config.path).toBe(process.cwd());
-  expect(config.extendsArg).toBe(null);
+  expect(config.extendsArg).toBeNull();
   expect(config.preBuiltCommands).toBe(preBuiltCommands);
   expect(ConfigCommands).toHaveBeenCalledTimes(1);
   expect(ConfigCommands).toHaveBeenCalledWith(
     configOptions.commands,
     config.path
   );
-  expect(config.errors.length).toBe(0);
-  expect(config.warnings.length).toBe(0);
+  expect(config.errors).toHaveLength(0);
+  expect(config.warnings).toHaveLength(0);
 });
 
 test('Config Model: Should init Config object with the given path', () => {
@@ -63,8 +64,8 @@ test('Config Model: Should init Config object with the given path', () => {
   const configOptions = {
     commands: [
       {
-        name: 'test',
-        command: 'test command'
+        name: chance.word(),
+        command: chance.sentence()
       }
     ]
   };
@@ -73,12 +74,12 @@ test('Config Model: Should init Config object with the given path', () => {
 
   expect(config.originalConfig).toBe(configOptions);
   expect(config.path).toBe(path);
-  expect(config.extendsArg).toBe(null);
+  expect(config.extendsArg).toBeNull();
   expect(config.preBuiltCommands).toBe(preBuiltCommands);
   expect(ConfigCommands).toHaveBeenCalledTimes(1);
   expect(ConfigCommands).toHaveBeenCalledWith(configOptions.commands, path);
-  expect(config.errors.length).toBe(0);
-  expect(config.warnings.length).toBe(0);
+  expect(config.errors).toHaveLength(0);
+  expect(config.warnings).toHaveLength(0);
 });
 
 test('Config Model: Should init Config object with the given path having only extends', () => {
@@ -92,14 +93,14 @@ test('Config Model: Should init Config object with the given path having only ex
   });
 
   const configOptions = {
-    extends: 'valid path'
+    extends: chance.word()
   };
 
   const config = new Config(configOptions, path);
 
   expect(ConfigCommands).toHaveBeenCalledTimes(1);
   expect(ConfigCommands).toHaveBeenCalledWith([], path);
-  expect(config.errors.length).toBe(0);
+  expect(config.errors).toHaveLength(0);
 });
 
 test('Config Model: Should init Config object with the given path having extends and empty commands array', () => {
@@ -113,7 +114,7 @@ test('Config Model: Should init Config object with the given path having extends
   });
 
   const configOptions = {
-    extends: 'valid path',
+    extends: chance.word(),
     commands: []
   };
 
@@ -121,37 +122,41 @@ test('Config Model: Should init Config object with the given path having extends
 
   expect(ConfigCommands).toHaveBeenCalledTimes(1);
   expect(ConfigCommands).toHaveBeenCalledWith([], path);
-  expect(config.errors.length).toBe(0);
+  expect(config.errors).toHaveLength(0);
 });
 
 test('Config Model: Should set extends on class when extends is string', () => {
   const configOptions = {
-    extends: 'test'
+    extends: chance.word()
   };
 
   const config = new Config(configOptions);
+
   expect(config.extendsArg).toEqual([configOptions.extends]);
 });
 
 test('Config Model: Should extend Config object with a given array', () => {
   const configOptions = {
-    extends: ['test', 'test1']
+    extends: chance.unique(chance.word, chance.integer({ min: 1, max: 5 }))
   };
 
   const config = new Config(configOptions);
-  expect(config.extendsArg).toEqual([...configOptions.extends]);
+
+  expect(config.extendsArg).toEqual(configOptions.extends);
 });
 
 test('Config Model: Should ignore some properties when config has errors', () => {
   const config = new Config();
-  expect(config.errors.length).toBe(1);
-  expect(config.extendsArg).toBe(null);
-  expect(config.preBuiltCommands).toBe(null);
+
+  expect(config.errors).toHaveLength(1);
+  expect(config.extendsArg).toBeNull();
+  expect(config.preBuiltCommands).toBeNull();
 });
 
 test('Config Model: Should throw error on empty config', () => {
   const config = new Config();
-  expect(config.errors.length).toBe(1);
+
+  expect(config.errors).toHaveLength(1);
   expect(config.errors[0].message).toBe(VALID_CONFIG_STRUCTURE_ERROR_MESSAGE);
   expect(config.errors[0].level).toBe('error');
   expect(config.errors[0].type).toBe('validation-exception');
@@ -163,7 +168,8 @@ test('Config Model: Should throw error on empty Commands', () => {
   };
 
   const config = new Config(configOptions);
-  expect(config.errors.length).toBe(1);
+
+  expect(config.errors).toHaveLength(1);
   expect(config.errors[0].message).toBe(VALID_CONFIG_STRUCTURE_ERROR_MESSAGE);
   expect(config.errors[0].level).toBe('error');
   expect(config.errors[0].type).toBe('validation-exception');
@@ -175,71 +181,76 @@ test('Config Model: Should error when extends is not a string or array', () => {
   };
 
   const config = new Config(configOptions);
-  expect(config.errors.length).toBe(1);
+
+  expect(config.errors).toHaveLength(1);
   expect(config.errors[0].message).toBe(EXTENDS_TYPING_ERROR_MESSAGE);
   expect(config.errors[0].level).toBe('error');
   expect(config.errors[0].type).toBe('validation-exception');
 });
 
 test('Config Model: Should error when depth is > 100', () => {
+  const path = chance.word();
   const configOptions = {
     commands: [
       {
-        name: 'test',
-        command: 'test command'
+        name: chance.word(),
+        command: chance.sentence()
       }
     ]
   };
 
-  const config = new Config(configOptions, 'path', 101);
+  const config = new Config(configOptions, path, 101);
 
-  expect(config.errors.length).toBe(1);
+  expect(config.errors).toHaveLength(1);
   expect(config.errors[0].message).toBe(MAX_DEPTH_ERROR_MESSAGE);
   expect(config.errors[0].level).toBe('error');
   expect(config.errors[0].type).toBe('validation-exception');
 });
 
 test('Config Model: Should not error when depth is < 100', () => {
+  const path = chance.word();
   const configOptions = {
     commands: [
       {
-        name: 'test',
-        command: 'test command'
+        name: chance.word(),
+        command: chance.sentence()
       }
     ]
   };
 
   const config = new Config(
     configOptions,
-    'path',
+    path,
     Math.round(Math.random(0, 100))
   );
 
-  expect(config.errors.length).toBe(0);
+  expect(config.errors).toHaveLength(0);
 });
 
 test('Config Model: Should ignore depth if not a number', () => {
+  const path = chance.word();
   const configOptions = {
     commands: [
       {
-        name: 'test',
-        command: 'test command'
+        name: chance.word(),
+        command: chance.sentence()
       }
     ]
   };
 
-  const config = new Config(configOptions, 'path', Symbol('depth'));
+  const config = new Config(configOptions, path, Symbol('depth'));
 
-  expect(config.errors.length).toBe(0);
+  expect(config.errors).toHaveLength(0);
 });
 
 test('Config Model: Should error when commands are not an object', () => {
   const configOptions = {
-    commands: ['test1', true, Symbol('test')]
+    commands: [chance.word(), chance.bool(), Symbol('test')]
   };
 
   const config = new Config(configOptions);
-  expect(config.errors.length).toBe(3);
+
+  expect(config.errors).toHaveLength(3);
   expect(config.errors[0].message).toBe(VALID_COMMAND_ERROR_MESSAGE);
   expect(config.errors[0].level).toBe('error');
   expect(config.errors[0].type).toBe('validation-exception');
@@ -264,15 +275,15 @@ test('Config Model: Should handle errors from config commands', () => {
   const configOptions = {
     commands: [
       {
-        name: 'test',
-        command: 'test command'
+        name: chance.word(),
+        command: chance.sentence()
       }
     ]
   };
 
   const config = new Config(configOptions);
 
-  expect(config.errors.length).toBe(1);
+  expect(config.errors).toHaveLength(1);
   expect(config.errors[0]).toBe(fakeError);
 });
 
@@ -289,14 +300,14 @@ test('Config Model: Should handle warnings from config commands', () => {
   const configOptions = {
     commands: [
       {
-        name: 'test',
-        command: 'test command'
+        name: chance.word(),
+        command: chance.sentence()
       }
     ]
   };
 
   const config = new Config(configOptions);
 
-  expect(config.warnings.length).toBe(1);
+  expect(config.warnings).toHaveLength(1);
   expect(config.warnings[0]).toBe(fakeWarning);
 });

@@ -7,7 +7,7 @@ export const readFile = filename =>
       path.resolve(process.cwd(), filename),
       'utf8',
       (error, data) => {
-        if (error) reject(error);
+        if (error) reject(new Error(error.message));
         resolve(data);
       }
     );

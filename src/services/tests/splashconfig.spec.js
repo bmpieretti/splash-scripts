@@ -1,10 +1,9 @@
+import { chance } from '@splash-plus/jest-config';
 import { getSplashCommands } from '../splashconfig';
 import { getConfigs } from '../cosmicconfig';
 import CommandList from '../../models/CommandList';
 
-jest.mock('../cosmicconfig', () => ({
-  getConfigs: jest.fn()
-}));
+jest.mock('../cosmicconfig');
 
 jest.mock('../../models/CommandList');
 
@@ -15,7 +14,7 @@ beforeEach(() => {
 test('ShellJs Service: Should run shelljs command with the passed command', async () => {
   const allConfigs = Symbol('allConfigs');
   const allCommands = Symbol('allCommands');
-  getConfigs.mockImplementation(() => Promise.resolve(allConfigs));
+  getConfigs.mockResolvedValue(allConfigs);
   CommandList.mockImplementation(() => {
     return {
       commands: allCommands
@@ -29,20 +28,16 @@ test('ShellJs Service: Should run shelljs command with the passed command', asyn
   expect(actualCommands).toBe(allCommands);
 });
 
-test('ShellJs Service: Should run shelljs command with the passed command', async () => {
-  const errorSymbol = Symbol('error');
+test('ShellJs Service: Should handle errors thrown from config generation', async () => {
+  const error = new Error(chance.word());
   const allCommands = Symbol('allCommands');
-  getConfigs.mockImplementation(() => Promise.reject(errorSymbol));
+  getConfigs.mockRejectedValue(error);
+
   CommandList.mockImplementation(() => {
     return {
       commands: allCommands
     };
   });
 
-  try {
-    await getSplashCommands();
-    expect(true).toBe(false);
-  } catch (error) {
-    expect(error).toBe(errorSymbol);
-  }
+  await expect(getSplashCommands()).rejects.toThrow(error);
 });
